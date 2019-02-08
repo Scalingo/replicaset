@@ -82,8 +82,9 @@ func Initiate(session *mgo.Session, address, name string, tags map[string]string
 	// it. Try the older, incorrect format, if the correct format fails.
 	cfg := []Config{
 		Config{
-			Name:    name,
-			Version: 1,
+			Name:            name,
+			ProtocolVersion: 1,
+			Version:         1,
 			Members: []Member{{
 				Id:      1,
 				Address: address,
@@ -91,8 +92,9 @@ func Initiate(session *mgo.Session, address, name string, tags map[string]string
 			}},
 		},
 		Config{
-			Name:    name,
-			Version: 1,
+			Name:            name,
+			ProtocolVersion: 1,
+			Version:         1,
 			Members: []Member{{
 				Id:      1,
 				Address: formatIPv6AddressWithoutBrackets(address),
@@ -175,11 +177,12 @@ func fmtConfigForLog(config *Config) string {
 	}
 	return fmt.Sprintf(`{
   Name: %s,
+  ProtocolVersion: %d,
   Version: %d,
   Members: {
 %s
   },
-}`, config.Name, config.Version, strings.Join(memberInfo, "\n"))
+}`, config.Name, config.ProtocolVersion, config.Version, strings.Join(memberInfo, "\n"))
 }
 
 // applyReplSetConfig applies the new config to the mongo session. It also logs
@@ -421,9 +424,10 @@ func currentConfig(session *mgo.Session) (*Config, error) {
 // Config is the document stored in mongodb that defines the servers in the
 // replica set
 type Config struct {
-	Name    string   `bson:"_id"`
-	Version int      `bson:"version"`
-	Members []Member `bson:"members"`
+	Name            string   `bson:"_id"`
+	ProtocolVersion int64    `bson:"protocolVersion"`
+	Version         int      `bson:"version"`
+	Members         []Member `bson:"members"`
 }
 
 // StepDownPrimary asks the current mongo primary to step down.
