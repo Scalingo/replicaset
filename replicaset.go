@@ -439,9 +439,10 @@ func currentConfig(session *mgo.Session) (*Config, error) {
 // Config is the document stored in mongodb that defines the servers in the
 // replica set
 type Config struct {
-	Name    string   `bson:"_id"`
-	Version int      `bson:"version"`
-	Members []Member `bson:"members"`
+	Name            string   `bson:"_id"`
+	ProtocolVersion int64    `bson:"protocolVersion"`
+	Version         int      `bson:"version"`
+	Members         []Member `bson:"members"`
 }
 
 // StepDownPrimary asks the current mongo primary to step down.
