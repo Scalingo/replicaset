@@ -82,8 +82,9 @@ func Initiate(session *mgo.Session, address, name string, tags map[string]string
 	// it. Try the older, incorrect format, if the correct format fails.
 	cfg := []Config{
 		Config{
-			Name:    name,
-			Version: 1,
+			Name:            name,
+			ProtocolVersion: 1,
+			Version:         1,
 			Members: []Member{{
 				Id:      1,
 				Address: address,
@@ -91,8 +92,9 @@ func Initiate(session *mgo.Session, address, name string, tags map[string]string
 			}},
 		},
 		Config{
-			Name:    name,
-			Version: 1,
+			Name:            name,
+			ProtocolVersion: 1,
+			Version:         1,
 			Members: []Member{{
 				Id:      1,
 				Address: formatIPv6AddressWithoutBrackets(address),
@@ -193,11 +195,12 @@ func fmtConfigForLog(config *Config) string {
 	}
 	return fmt.Sprintf(`{
   Name: %s,
+  ProtocolVersion: %d,
   Version: %d,
   Members: {
 %s
   },
-}`, config.Name, config.Version, strings.Join(memberInfo, "\n"))
+}`, config.Name, config.ProtocolVersion, config.Version, strings.Join(memberInfo, "\n"))
 }
 
 // applyReplSetConfig applies the new config to the mongo session. It also logs
